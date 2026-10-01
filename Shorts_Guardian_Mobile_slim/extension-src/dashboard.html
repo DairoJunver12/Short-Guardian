@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shorts Guardian — Parent Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<script src="ui-scale.js"></script>
+<link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+
+<!-- ══════════════════ PIN GATE ══════════════════ -->
+<div id="pinGate">
+  <div class="pin-card" id="pinEntryCard">
+    <img class="pin-logo" src="icons/icon128.png" alt="Shorts Guardian" />
+    <h2>Parent Dashboard</h2>
+    <p id="pinPrompt">Enter your PIN to continue</p>
+    <div class="pin-dots" id="pinDots">
+      <div class="pin-dot" id="d0"></div>
+      <div class="pin-dot" id="d1"></div>
+      <div class="pin-dot" id="d2"></div>
+      <div class="pin-dot" id="d3"></div>
+    </div>
+    <div class="numpad" id="numpad"></div>
+    <div id="pinError"></div>
+    <div class="create-pin-note u-hidden" id="createNote">
+      No PIN set yet — enter any 4-digit PIN to create one.
+    </div>
+    <button class="pin-clear-btn u-hidden" id="pinForgotBtn">
+      Forgot PIN?
+    </button>
+  </div>
+
+  <!-- ── Forgot PIN → OTP verification step ── -->
+  <div class="pin-card u-hidden" id="otpCard">
+    <img class="pin-logo" src="icons/icon128.png" alt="Shorts Guardian" />
+    <h2>Verify it's you</h2>
+    <p id="otpPrompt">Enter the 5-digit code we sent to your Gmail.</p>
+    <p class="otp-email" id="otpEmailHint"></p>
+
+    <div class="otp-inputs" id="otpInputs">
+      <input type="text" inputmode="numeric" maxlength="1" class="otp-digit" data-i="0" />
+      <input type="text" inputmode="numeric" maxlength="1" class="otp-digit" data-i="1" />
+      <input type="text" inputmode="numeric" maxlength="1" class="otp-digit" data-i="2" />
+      <input type="text" inputmode="numeric" maxlength="1" class="otp-digit" data-i="3" />
+      <input type="text" inputmode="numeric" maxlength="1" class="otp-digit" data-i="4" />
+    </div>
+
+    <div id="otpError"></div>
+    <div id="otpNoEmail" class="u-hidden">
+      No recovery Gmail is connected yet. Go to <strong>Settings → Email Notifications</strong> to connect
+      Gmail first, then try “Forgot PIN?” again.
+    </div>
+
+    <button class="save-btn" id="btnVerifyOtp">Verify code</button>
+    <button class="pin-clear-btn" id="btnResendOtp">Resend code</button>
+    <button class="pin-clear-btn" id="btnBackToPin">← Back to PIN entry</button>
+  </div>
+
+</div>
+
+<!-- ══════════════════ MAIN APP ══════════════════ -->
+<div id="app" class="u-hidden">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <img src="icons/icon128.png" alt="" />
+      <div>
+        <h1>Shorts Guardian</h1>
+        <span>Parent Dashboard</span>
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <!-- Monitor toggle pill -->
+      <label class="monitor-pill" title="Toggle monitoring">
+        <span class="monitor-pip pip-on" id="monitorPip">
+          <span class="monitor-pip-dot"></span>
+          <span class="monitor-pip-ring"></span>
+        </span>
+        <span class="monitor-label-text" id="monitorLabel">Monitoring on</span>
+        <label class="tog u-ml-sm">
+          <input type="checkbox" id="masterToggle" />
+          <span class="sl"></span>
+        </label>
+      </label>
+
+      <button class="btn btn-ghost" id="btnExport">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export CSV
+      </button>
+      <button class="btn btn-danger" id="btnClear">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        Clear logs
+      </button>
+    </div>
+  </header>
+
+  <div class="main">
+
+    <!-- KPI cards -->
+    <div class="section-eyebrow">Today's activity</div>
+    <div class="stat-row" id="statRow">
+
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4V8z"/></svg>
+        </div>
+        <div class="stat-num" id="kpiToday">0</div>
+        <div class="stat-lbl">Shorts watched</div>
+      </div>
+
+      <div class="stat-card danger">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 2.6 17.5a1.8 1.8 0 0 0 1.6 2.7h15.6a1.8 1.8 0 0 0 1.6-2.7L13.7 3.9a1.8 1.8 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        </div>
+        <div class="stat-num danger" id="kpiFlagged">0</div>
+        <div class="stat-lbl">Flagged for review</div>
+        <div class="stat-sub" id="kpiFlagRate"></div>
+      </div>
+
+      <div class="stat-card danger">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div class="stat-num danger" id="kpiInappropriate">0</div>
+        <div class="stat-lbl">Inappropriate</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 12l3-3 3 3 5-6"/></svg>
+        </div>
+        <div class="stat-num" id="kpiTotal">0</div>
+        <div class="stat-lbl">All-time logged</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div class="stat-num" id="kpiDays">0</div>
+        <div class="stat-lbl">Days monitored</div>
+      </div>
+
+    </div><!-- /stat-row -->
+
+    <!-- Charts -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <h3>Top content categories</h3>
+        <div class="chart-sub">All-time, by detection count</div>
+        <div class="bar-chart" id="categoryBars"></div>
+      </div>
+      <div class="chart-card">
+        <h3>Flagged vs. safe</h3>
+        <div class="chart-sub">Proportion of all logged Shorts</div>
+        <div class="donut-wrap">
+          <canvas id="donut" width="156" height="156"></canvas>
+          <div class="donut-legend" id="donutLegend"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline-card">
+      <h3>Activity — last 30 days</h3>
+      <div class="day-bars" id="dayBars"></div>
+    </div>
+
+    <!-- Activity log -->
+    <div class="log-card">
+      <div class="log-toolbar">
+        <h3>Activity log <span class="u-hint-sm" id="dashTotalDetected" style="font-weight:500">— 0 videos detected in total</span></h3>
+        <div class="search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input class="search-input" type="text" id="logSearch" placeholder="Search title or channel…" autocomplete="off" />
+        </div>
+        <select class="filter-sel" id="logFilter" aria-label="Status filter">
+          <option value="all">All videos</option>
+          <option value="flagged">Flagged only</option>
+          <option value="safe">Safe only</option>
+          <option value="inappropriate">Inappropriate only</option>
+        </select>
+        <select class="filter-sel" id="ratingFilter" aria-label="MTRCB rating">
+          <option value="all">All ratings</option>
+          <option value="G" selected>G only</option>
+          <option value="PG">PG only</option>
+          <option value="SPG">SPG only</option>
+        </select>
+        <select class="filter-sel" id="dateFilter" aria-label="Date range">
+          <option value="7">Last 7 days</option>
+          <option value="30" selected>Last 30 days</option>
+          <option value="0">All time</option>
+        </select>
+        <button class="pg-btn danger-btn" id="btnClearHistory" title="Delete every activity log entry">🗑️ Clear History</button>
+      </div>
+
+      <div class="legend-note">
+        <b>Checks:</b>
+        <span class="scan-badge ran">T</span> Title/keywords &nbsp;
+        <span class="scan-badge ran">I</span> Image (Vision/on-device) &nbsp;
+        <span class="scan-badge ran">A</span> Audio transcript &nbsp;
+        — gray = check didn't run. &nbsp; <b>Score:</b> Visual 40% + Text 30% + Audio 30%.
+      </div>
+
+      <table class="log-table" role="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Snap</th>
+            <th>Time</th>
+            <th>Title / Channel</th>
+            <th>Category</th>
+            <th>Flags</th>
+            <th>Checks</th>
+            <th>MTRCB</th>
+            <th>Score</th>
+            <th>Verdict</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="logBody"></tbody>
+      </table>
+
+      <div class="empty-state u-hidden" id="emptyState">
+        <strong>No entries found</strong>
+        <span>Try adjusting the filters above.</span>
+      </div>
+      <div class="pagination" id="pagination"></div>
+    </div><!-- /log-card -->
+
+    <!-- Clear-history confirmation modal -->
+    <div id="clearHistoryModal" class="forgot-modal u-hidden">
+      <div class="forgot-modal-card">
+        <div class="forgot-modal-icon">🗑️</div>
+        <h3>Clear activity history?</h3>
+        <p>This permanently deletes every entry in the Activity Log — snapshots, transcripts, and classification results.</p>
+        <p class="forgot-modal-sub">This action cannot be undone.</p>
+        <div class="forgot-modal-btns">
+          <button id="clearHistoryCancelBtn" class="forgot-btn-cancel">Cancel</button>
+          <button id="clearHistoryConfirmBtn" class="forgot-btn-confirm">Yes, clear history</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="section-eyebrow">Settings</div>
+    <div class="settings-grid">
+
+      <div class="settings-card">
+        <h3>Monitoring preferences</h3>
+        <div class="field">
+          <label>Log retention (days)</label>
+          <input type="number" id="retentionDays" min="1" max="365" value="30" />
+        </div>
+        <div class="field">
+          <label>Child's age rating (MTRCB)</label>
+          <div class="age-rating-derived" id="ageRatingDisplay">
+            <span class="age-rating-badge" id="ageRatingBadge">PG</span>
+            <span class="age-rating-desc" id="ageRatingDesc">Parental Guidance (ages 7–13)</span>
+          </div>
+          <div class="sens-hint">
+            Set automatically based on your child's age in the Profile tab.
+            <strong>G</strong> (ages 5–7) blocks the most; <strong>PG</strong> (ages 7–13) blocks standard mature content;
+            <strong>SPG</strong> (ages 13–18) blocks only the most explicit content.
+          </div>
+        </div>
+        <div class="field">
+          <label>Capture interval (seconds)</label>
+          <input type="number" id="captureInterval" min="5" max="120" value="12" />
+        </div>
+        <div class="field">
+          <label>Flagging sensitivity — <span class="range-val" id="sensVal">Medium</span></label>
+          <input type="range" id="sensitivity" min="0" max="1" step="0.1" value="0.5" />
+          <div class="sens-hint" id="sensHint"></div>
+        </div>
+        <div class="field">
+          <label class="check-item">
+            <input type="checkbox" id="saveSnapshots" checked />
+            Save a snapshot thumbnail with each log entry
+          </label>
+          <label class="check-item u-mt-sm">
+            <input type="checkbox" id="saveSnapshotsAllShorts" />
+            Save snapshots for every Short, not just flagged ones
+          </label>
+          <div class="sens-hint">Stored locally only — never uploaded (separate from optional Claude Vision screenshots).</div>
+        </div>
+        <div class="field">
+          <label class="check-item">
+            <input type="checkbox" id="audioScanEnabled" checked />
+            Transcribe and scan audio of each Short
+          </label>
+          <label class="u-mt-sm">Audio clip length (seconds)</label>
+          <input type="number" id="audioClipSeconds" min="3" max="15" value="6" />
+          <div class="sens-hint">Runs fully on-device (Whisper-tiny). First use downloads a ~40 MB model.</div>
+        </div>
+        <button class="save-btn" id="btnSavePrefs">Save preferences</button>
+        <div class="feedback" id="settingsMsg"></div>
+      </div>
+
+      <div class="settings-card">
+        <h3>Flagged categories</h3>
+        <p class="hint">Videos matching these categories will be highlighted for your review.</p>
+        <div class="check-list" id="categoryChecks"></div>
+        <br />
+        <button class="save-btn" id="btnSaveCats">Save categories</button>
+      </div>
+
+      <div class="settings-card">
+        <h3>Change PIN</h3>
+        <div class="pin-form">
+          <input class="pin-input" type="password" inputmode="numeric" maxlength="4" id="oldPin" placeholder="Current PIN" />
+          <input class="pin-input" type="password" inputmode="numeric" maxlength="4" id="newPin" placeholder="New PIN" />
+          <input class="pin-input" type="password" inputmode="numeric" maxlength="4" id="confirmPin" placeholder="Confirm new PIN" />
+          <button class="save-btn" id="btnChangePin">Update PIN</button>
+          <div class="feedback" id="pinChangeMsg"></div>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <h3>Vision AI <span class="u-hint-sm">(optional)</span></h3>
+        <p class="hint">Add an Anthropic API key to enable screenshot analysis. Without it, keyword matching still catches most harmful text.</p>
+        <div class="field">
+          <label>Anthropic API Key</label>
+          <input type="password" class="api-key-input" id="apiKeyInput" placeholder="sk-ant-api03-…" autocomplete="off" />
+        </div>
+        <div class="status-line" id="visionStatus">No key set — keyword-only mode</div>
+        <button class="save-btn" id="btnSaveApiKey">Save API key</button>
+        <div class="feedback" id="apiKeyMsg"></div>
+        <p class="u-note">Get a key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>. Haiku typically costs under $0.01 per 100 Shorts.</p>
+      </div>
+
+      <div class="settings-card">
+        <h3>Email Notifications</h3>
+        <p class="hint">Get a Gmail alert whenever a Short is flagged — includes the title, reason, rating, and a review link.</p>
+        <div class="field">
+          <label class="check-item">
+            <input type="checkbox" id="emailNotifyEnabled" />
+            Email me when a Short is flagged
+          </label>
+        </div>
+        <div class="field">
+          <label>Parent's Gmail address</label>
+          <input type="email" class="api-key-input" id="parentEmail" placeholder="parent@gmail.com" autocomplete="off" />
+        </div>
+        <div class="sens-hint">Sent via the Gmail API using your own Google sign-in — no extension server involved.</div>
+        <div class="field u-mt-sm">
+          <label>Gmail authorization</label>
+          <div class="status-line" id="gmailAuthStatus">Checking…</div>
+          <button class="save-btn u-btn-ghost u-mt-sm" id="btnAuthGmail">Connect Gmail account</button>
+          <div class="sens-hint">You need to connect once per device. Your PIN and API keys are never shared.</div>
+        </div>
+        <button class="save-btn" id="btnSaveNotify">Save notification settings</button>
+        <div class="feedback" id="notifyMsg"></div>
+      </div>
+
+      <div class="settings-card">
+        <h3>Cross-Device Sync</h3>
+        <p class="hint">Sync monitoring settings across every Chrome browser signed in to this Google account. Logs and snapshots always stay local.</p>
+        <div class="field">
+          <label class="check-item">
+            <input type="checkbox" id="syncEnabled" checked />
+            Sync settings across my devices
+          </label>
+        </div>
+        <div class="status-line" id="syncStatus">Sync disabled</div>
+        <button class="save-btn" id="btnSaveSync">Save sync setting</button>
+        <button class="save-btn u-btn-ghost u-mt-sm" id="btnManualSync">Sync now</button>
+        <div class="feedback" id="syncMsg"></div>
+        <p class="u-note">API keys and your PIN are never synced — they stay on this device only.</p>
+      </div>
+
+      <div class="settings-card">
+        <h3>About</h3>
+        <div class="about-body">
+          <strong>Shorts Guardian</strong> v1.5.0<br />
+          Text classification: keyword matching — fast, private, no API needed.<br />
+          Image classification: <strong>Claude Haiku</strong> via Anthropic API (optional) or on-device MobileNet.<br />
+          Audio: fully on-device with Whisper-tiny.<br /><br />
+          A weighted score (Visual 40% / Text 30% / Audio 30%) combines all three signals
+          into a final <strong>Appropriate / Inappropriate</strong> verdict alongside an MTRCB-style
+          rating (G / PG / SPG).<br /><br />
+          Flags are suggestions for your review, not automatic verdicts.
+          Logs stay in your browser; only settings may sync, and only if you enable it.
+        </div>
+      </div>
+
+    </div><!-- /settings-grid -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- Snapshot lightbox -->
+<div id="snapLightbox"><img id="snapLightboxImg" src="" alt="Short snapshot" /></div>
+
+<script src="dist/dashboard.js"></script>
+</body>
+</html>

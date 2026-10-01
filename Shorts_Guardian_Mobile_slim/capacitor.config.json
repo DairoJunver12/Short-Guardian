@@ -1,0 +1,9 @@
+{
+  "appId": "com.shortsguardian.app",
+  "appName": "Shorts Guardian",
+  "webDir": "www",
+  "server": { "androidScheme": "https" },
+  "plugins": {
+    "CapacitorHttp": { "enabled": false }
+  }
+}

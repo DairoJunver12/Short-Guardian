@@ -1,0 +1,15 @@
+/* Mobile-only additions for Shorts Guardian */
+#sgMobileBar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 2147483000;
+  display: flex; gap: 10px; justify-content: center;
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: rgba(10, 26, 16, .94); backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(255,255,255,.12);
+}
+#sgMobileBar button {
+  flex: 1; max-width: 320px; border: 0; border-radius: 12px; padding: 13px 14px;
+  font: 700 15px Inter, system-ui, sans-serif; color: #fff; background: #2f6f62;
+}
+#sgMobileBar button.alt { background: #3b4f47; }
+#sgMobileBar button[hidden] { display: none; }
+body { padding-top: env(safe-area-inset-top, 0px); padding-bottom: 76px; }

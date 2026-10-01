@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Shorts Guardian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <img class="header-icon" src="icons/icon48.png" alt="Shorts Guardian" />
+  <div class="header-text">
+    <div class="header-name">Shorts Guardian</div>
+    <div class="header-sub">On-device content monitor</div>
+  </div>
+</div>
+
+<!-- Body -->
+<div class="body">
+
+  <!-- Monitor toggle -->
+  <div class="monitor-row">
+    <span class="monitor-label">
+      <span class="status-pip" id="pip">
+        <span class="status-pip-dot"></span>
+        <span class="status-pip-ring"></span>
+      </span>
+      <span id="monitorText">Monitoring</span>
+    </span>
+    <label class="tog" aria-label="Toggle monitoring">
+      <input type="checkbox" id="enabledToggle" />
+      <span class="sl"></span>
+    </label>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon-row">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4V8z"/></svg>
+        </div>
+      </div>
+      <div class="stat-num" id="statTotal">—</div>
+      <div class="stat-label">Shorts today</div>
+    </div>
+
+    <div class="stat-card alert-card">
+      <div class="stat-icon-row">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 2.6 17.5a1.8 1.8 0 0 0 1.6 2.7h15.6a1.8 1.8 0 0 0 1.6-2.7L13.7 3.9a1.8 1.8 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        </div>
+      </div>
+      <div class="stat-num" id="statFlagged">—</div>
+      <div class="stat-label">Flagged today</div>
+    </div>
+  </div>
+
+  <!-- Model accuracy -->
+  <div class="accuracy-row" title="MobileNet + DistilBERT combined, vs. your ⚠/✓ reviews in the dashboard">
+    <div>
+      <div class="accuracy-label">Model accuracy</div>
+      <div class="accuracy-sub" id="popupAccuracySub">No reviews yet</div>
+    </div>
+    <span class="accuracy-pct" id="popupAccuracy">0%</span>
+  </div>
+
+  <!-- Alert banner (conditional) -->
+  <div class="flag-banner" id="flagBanner">
+    <span class="flag-banner-icon">⚑</span>
+    <span id="flagBannerText"></span>
+  </div>
+
+  <!-- CTA -->
+  <button class="btn-dash" id="openDash">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+    Open parent dashboard
+  </button>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <span class="footer-version">v1.5.0</span>
+  <a class="footer-privacy" href="#" title="All processing is on-device">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    On-device · Private
+  </a>
+</div>
+
+<script src="dist/popup.js"></script>
+</body>
+</html>

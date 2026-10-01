@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>SG Offscreen</title>
+</head>
+<body>
+  <canvas id="canvas" style="display:none"></canvas>
+
+  <!--
+    Load order is critical. The inline script MUST run between tf and mobilenet
+    so we can disable WebGL before mobilenet triggers model loading.
+
+    Why: tf.min.js is a UMD bundle that registers a WebGL backend. WebGL's
+    shader compiler calls new Function() which MV3 CSP blocks (EvalError),
+    crashing TF.js init and leaving tf.loadGraphModel undefined — which is
+    what mobilenet.load() calls internally.
+
+    Forcing WEBGL_VERSION=0 + setting backend to 'cpu' before mobilenet loads
+    avoids the EvalError entirely. The CPU backend has no new Function() calls.
+  -->
+  <script src="vendor/tf.min.js"></script>
+
+  <!--
+    tf-webgl-disable.js must run between tf and mobilenet.
+    It cannot be an inline script — MV3 CSP blocks 'unsafe-inline'.
+    Loading it as a 'self' external script satisfies the policy.
+  -->
+  <script src="dist/tf-webgl-disable.js"></script>
+
+  <script src="vendor/mobilenet.min.js"></script>
+  <script type="module" src="dist/offscreen-loader.js"></script>
+  <script src="dist/offscreen.js"></script>
+</body>
+</html>

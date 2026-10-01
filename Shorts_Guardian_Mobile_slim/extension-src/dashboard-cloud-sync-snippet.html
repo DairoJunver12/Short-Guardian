@@ -1,0 +1,137 @@
+<!--
+  ═══════════════════════════════════════════════════════════════════
+  PASTE THIS BLOCK inside the <div class="settings-grid"> in
+  dashboard.html, just BEFORE the closing </div> of settings-grid
+  (i.e. before the About card or at the end of the grid).
+  ═══════════════════════════════════════════════════════════════════
+-->
+
+<!-- Live update badge — appears top-right of the dashboard when a new
+     cloud entry arrives via Supabase Realtime. Add this just BEFORE
+     the closing </header> of your topbar. -->
+<span class="cloud-sync-badge" id="cloudSyncBadge"></span>
+
+<!-- ═══ Cloud Sync (Supabase) settings card ═══ -->
+<div class="settings-card">
+  <h3>Cloud Sync
+    <span class="u-hint-sm">(Supabase — cross-device)</span>
+  </h3>
+  <p class="hint">
+    Let the parent dashboard on a <strong>separate device</strong> see the child's
+    YouTube Shorts activity in real time. Both devices share a
+    <strong>Family ID</strong> — copy it from the child device and paste it on the
+    parent device. No accounts needed.
+  </p>
+
+  <!-- Status line -->
+  <div class="status-line" id="supabaseStatus">Cloud sync disabled</div>
+
+  <!-- Enable toggle -->
+  <div class="field u-mt-sm">
+    <label class="check-item">
+      <input type="checkbox" id="supabaseSyncEnabled" />
+      Enable cloud sync via Supabase
+    </label>
+  </div>
+
+  <!-- Supabase URL -->
+  <div class="field">
+    <label>Supabase Project URL</label>
+    <input
+      type="text"
+      class="api-key-input"
+      id="supabaseUrl"
+      placeholder="https://xxxxxxxxxxxx.supabase.co"
+      autocomplete="off"
+    />
+  </div>
+
+  <!-- Anon key -->
+  <div class="field">
+    <label>Supabase Anon Key</label>
+    <input
+      type="password"
+      class="api-key-input"
+      id="supabaseAnonKey"
+      placeholder="eyJ…"
+      autocomplete="off"
+    />
+    <div class="sens-hint">
+      This is the public "anon" key from your Supabase project's API settings.
+      It never leaves your browser.
+    </div>
+  </div>
+
+  <!-- Snapshots toggle -->
+  <div class="field">
+    <label class="check-item">
+      <input type="checkbox" id="supabaseSyncSnapshots" />
+      Sync snapshot thumbnails to cloud
+      <span class="u-hint-sm">(larger — off by default)</span>
+    </label>
+  </div>
+
+  <button class="save-btn" id="btnSaveSupabase">Save cloud settings</button>
+  <div class="feedback" id="supabaseMsg"></div>
+
+  <!-- Family ID section -->
+  <div class="field u-mt-sm" style="border-top:1px solid var(--border);padding-top:14px;margin-top:6px">
+    <label>Family ID <span class="u-hint-sm">(shared secret between devices)</span></label>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+      <code
+        id="familyIdDisplay"
+        style="
+          flex:1;font-size:11px;background:var(--surface);
+          border:1px solid var(--border);border-radius:6px;
+          padding:7px 10px;word-break:break-all;color:var(--ink-3);
+          font-family:'JetBrains Mono',monospace;
+        "
+      >(not generated yet)</code>
+      <button class="save-btn u-btn-ghost" id="btnCopyFamilyId" style="flex-shrink:0">Copy</button>
+    </div>
+    <div class="sens-hint">
+      On the <strong>child device</strong>: open the dashboard → Cloud Sync → copy the Family ID.<br />
+      On the <strong>parent device</strong>: paste it in the Family ID field above, enter the same
+      Supabase URL &amp; key, enable sync, and save.<br />
+      Logs and alerts will now appear on the parent dashboard in real time.
+    </div>
+  </div>
+
+  <!-- Manual refresh -->
+  <button class="save-btn u-btn-ghost u-mt-sm" id="btnRefreshCloud">
+    ⟳ Refresh from cloud now
+  </button>
+
+  <p class="u-note">
+    Your PIN, Anthropic API key, and Supabase anon key are <strong>never</strong>
+    uploaded to Supabase — they stay on this device only.
+    Get a free Supabase project at
+    <a href="https://supabase.com" target="_blank">supabase.com</a>.
+  </p>
+</div>
+<!-- ═══ end Cloud Sync card ═══ -->
+
+
+<!--
+  ═══════════════════════════════════════════════════════════════════
+  Also add this CSS to your dashboard.css (or a <style> block):
+
+  .cloud-sync-badge {
+    display: none;
+    position: fixed;
+    top: 14px;
+    right: 16px;
+    background: var(--teal);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    z-index: 9999;
+    animation: slideIn .2s ease;
+    pointer-events: none;
+  }
+  .cloud-sync-badge.show { display: block; }
+
+  ═══════════════════════════════════════════════════════════════════
+-->
